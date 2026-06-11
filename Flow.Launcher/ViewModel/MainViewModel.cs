@@ -1033,6 +1033,7 @@ namespace Flow.Launcher.ViewModel
 
         private bool? _selectedItemFromQueryResults;
         private bool _previewSuppressedBySelectedResult;
+        private bool _previewAutoOpenedBySelectedResult;
 
         private ResultViewModel _previewSelectedItem;
         public ResultViewModel PreviewSelectedItem
@@ -1102,6 +1103,7 @@ namespace Flow.Launcher.ViewModel
         private void HidePreview()
         {
             _previewSuppressedBySelectedResult = false;
+            _previewAutoOpenedBySelectedResult = false;
 
             if (PluginManager.UseExternalPreview())
                 _ = CloseExternalPreviewAsync();
@@ -1128,7 +1130,18 @@ namespace Flow.Launcher.ViewModel
             }
 
             if (previewWasVisible)
+            {
+                // A pane that was only auto-opened by a markdown result should not be
+                // restored on the next non-hidden selection — only user-opened panes are.
+                _previewSuppressedBySelectedResult = !_previewAutoOpenedBySelectedResult;
+                _previewAutoOpenedBySelectedResult = false;
+            }
+            else if (Settings.AlwaysPreview)
+            {
+                // With AlwaysPreview on, the pane reopens on the next query regardless, so
+                // arm the restore here too; otherwise a Hidden selection leaves it stuck closed.
                 _previewSuppressedBySelectedResult = true;
+            }
         }
 
         [RelayCommand]
@@ -1221,10 +1234,24 @@ namespace Flow.Launcher.ViewModel
                 }
             }
 
-            if (Settings.AlwaysPreview && !InternalPreviewVisible && !ExternalPreviewVisible)
+            // Per-result opt-in: results with markdown preview content pop the pane open on
+            // selection; leaving them closes it again, unless the pane was opened some other
+            // way (F1 toggle or AlwaysPreview), which stays untouched.
+            if (PreviewSelectedItem?.IsMarkdownPreview == true)
             {
-                ShowInternalPreview();
+                if (!InternalPreviewVisible && !ExternalPreviewVisible)
+                {
+                    _previewAutoOpenedBySelectedResult = true;
+                    ShowInternalPreview();
+                }
             }
+            else if (_previewAutoOpenedBySelectedResult)
+            {
+                _previewAutoOpenedBySelectedResult = false;
+                if (InternalPreviewVisible)
+                    HideInternalPreview();
+            }
+
             switch (PluginManager.UseExternalPreview())
             {
                 case true

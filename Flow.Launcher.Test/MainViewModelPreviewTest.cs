@@ -52,6 +52,112 @@ namespace Flow.Launcher.Test
             ClassicAssert.IsTrue(viewModel.InternalPreviewVisible);
         }
 
+        [Test]
+        public async Task GivenPreviewHidden_WhenMarkdownResultSelected_ThenInternalPreviewAutoOpensAsync()
+        {
+            var settings = new Settings
+            {
+                AlwaysPreview = false
+            };
+            var viewModel = CreatePreviewViewModel(settings, ResultAreaColumnPreviewHidden);
+
+            viewModel.PreviewSelectedItem = ViewModel("Markdown", PreviewContentType.Markdown, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+
+            ClassicAssert.IsTrue(viewModel.InternalPreviewVisible);
+        }
+
+        [Test]
+        public async Task GivenPreviewAutoOpenedForMarkdown_WhenTextResultSelected_ThenInternalPreviewAutoClosesAsync()
+        {
+            var settings = new Settings
+            {
+                AlwaysPreview = false
+            };
+            var viewModel = CreatePreviewViewModel(settings, ResultAreaColumnPreviewHidden);
+
+            viewModel.PreviewSelectedItem = ViewModel("Markdown", PreviewContentType.Markdown, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+            ClassicAssert.IsTrue(viewModel.InternalPreviewVisible);
+
+            viewModel.PreviewSelectedItem = ViewModel("Normal", PreviewContentType.Text, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+
+            ClassicAssert.IsFalse(viewModel.InternalPreviewVisible);
+        }
+
+        [Test]
+        public async Task GivenPreviewManuallyVisible_WhenTextResultSelected_ThenInternalPreviewStaysVisibleAsync()
+        {
+            var settings = new Settings
+            {
+                AlwaysPreview = false
+            };
+            var viewModel = CreatePreviewViewModel(settings, ResultAreaColumnPreviewShown);
+
+            viewModel.PreviewSelectedItem = ViewModel("Normal", PreviewContentType.Text, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+
+            ClassicAssert.IsTrue(viewModel.InternalPreviewVisible);
+        }
+
+        [Test]
+        public async Task GivenPreviewAutoOpenedForMarkdown_WhenHiddenThenTextResultSelected_ThenInternalPreviewStaysHiddenAsync()
+        {
+            var settings = new Settings
+            {
+                AlwaysPreview = false
+            };
+            var viewModel = CreatePreviewViewModel(settings, ResultAreaColumnPreviewHidden);
+
+            viewModel.PreviewSelectedItem = ViewModel("Markdown", PreviewContentType.Markdown, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+            ClassicAssert.IsTrue(viewModel.InternalPreviewVisible);
+
+            viewModel.PreviewSelectedItem = ViewModel("Hidden", PreviewContentType.Hidden, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+            ClassicAssert.IsFalse(viewModel.InternalPreviewVisible);
+
+            viewModel.PreviewSelectedItem = ViewModel("Normal", PreviewContentType.Text, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+
+            ClassicAssert.IsFalse(viewModel.InternalPreviewVisible);
+        }
+
+        [Test]
+        public async Task GivenAlwaysPreviewOnAndPreviewManuallyHidden_WhenTextResultSelected_ThenInternalPreviewStaysHiddenAsync()
+        {
+            var settings = new Settings
+            {
+                AlwaysPreview = true
+            };
+            var viewModel = CreatePreviewViewModel(settings, ResultAreaColumnPreviewHidden);
+
+            viewModel.PreviewSelectedItem = ViewModel("Normal", PreviewContentType.Text, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+
+            ClassicAssert.IsFalse(viewModel.InternalPreviewVisible);
+        }
+
+        [Test]
+        public async Task GivenAlwaysPreviewOnAndPreviewHidden_WhenHiddenThenTextResultSelected_ThenInternalPreviewReopensAsync()
+        {
+            var settings = new Settings
+            {
+                AlwaysPreview = true
+            };
+            var viewModel = CreatePreviewViewModel(settings, ResultAreaColumnPreviewHidden);
+
+            viewModel.PreviewSelectedItem = ViewModel("Hidden", PreviewContentType.Hidden, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+            ClassicAssert.IsFalse(viewModel.InternalPreviewVisible);
+
+            viewModel.PreviewSelectedItem = ViewModel("Normal", PreviewContentType.Text, settings);
+            await InvokeUpdatePreviewAsync(viewModel);
+
+            ClassicAssert.IsTrue(viewModel.InternalPreviewVisible);
+        }
+
         private static MainViewModel CreatePreviewViewModel(Settings settings, int resultAreaColumn)
         {
             var viewModel = (MainViewModel)RuntimeHelpers.GetUninitializedObject(typeof(MainViewModel));
