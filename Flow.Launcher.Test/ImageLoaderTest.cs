@@ -15,7 +15,7 @@ namespace Flow.Launcher.Test
     {
         [Test]
         [Apartment(ApartmentState.STA)]
-        public async Task GivenWidePngIcon_WhenLoadedAsSmallIcon_ThenBitmapIsConstrainedToSmallIconBoxAsync()
+        public async Task GivenWidePngIcon_WhenLoadedAsSmallIcon_ThenBitmapIsConstrainedToIconBoxAsync()
         {
             await ImageLoader.InitializeAsync();
             var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"{Guid.NewGuid():N}.png");
@@ -26,8 +26,8 @@ namespace Flow.Launcher.Test
                 var image = await ImageLoader.LoadAsync(path, loadFullImage: false, cacheImage: false);
                 var bitmap = (BitmapSource)image;
 
-                ClassicAssert.LessOrEqual(bitmap.PixelWidth, ImageLoader.SmallIconSize);
-                ClassicAssert.LessOrEqual(bitmap.PixelHeight, ImageLoader.SmallIconSize);
+                ClassicAssert.LessOrEqual(bitmap.PixelWidth, ImageLoader.ImageFileIconSize);
+                ClassicAssert.LessOrEqual(bitmap.PixelHeight, ImageLoader.ImageFileIconSize);
             }
             finally
             {

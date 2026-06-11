@@ -30,6 +30,9 @@ namespace Flow.Launcher.Infrastructure.Image
         public const int SmallIconSize = 64;
         public const int FullIconSize = 256;
         public const int FullImageSize = 320;
+        // Icon surfaces are up to ~42 logical px; 128 keeps them sharp through 250% DPI
+        // scaling while staying far smaller in cache than a FullIconSize decode.
+        public const int ImageFileIconSize = 128;
 
         private static readonly string[] ImageExtensions = [".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tiff", ".ico"];
         private static readonly string SvgExtension = ".svg";
@@ -246,8 +249,8 @@ namespace Flow.Launcher.Infrastructure.Image
                             bmp.UriSource = new Uri(path);
                             // .ico holds multiple resolutions; ask for the 256 frame and let WPF
                             // high-quality downscale to whatever the surface needs. Other formats
-                            // (PNG/JPG/etc.) stay clamped to SmallIconSize to keep the cache compact.
-                            var decodePixelSize = extension == ".ico" ? FullIconSize : SmallIconSize;
+                            // (PNG/JPG/etc.) stay clamped to ImageFileIconSize to keep the cache compact.
+                            var decodePixelSize = extension == ".ico" ? FullIconSize : ImageFileIconSize;
                             bmp.DecodePixelHeight = decodePixelSize;
                             bmp.DecodePixelWidth = decodePixelSize;
                             bmp.EndInit();

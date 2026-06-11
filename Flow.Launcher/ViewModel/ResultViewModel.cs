@@ -104,17 +104,6 @@ namespace Flow.Launcher.ViewModel
             }
         }
 
-        public double IconRadius
-        {
-            get
-            {
-                if (Result.RoundedIcon)
-                    return IconXY / 2;
-                
-                return IconXY;
-            }
-        }
-
         public Visibility ShowGlyph
         {
             get
