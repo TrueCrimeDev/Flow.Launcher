@@ -74,6 +74,17 @@ namespace Flow.Launcher
             _mainVM.ChangeQueryText(query, requery);
         }
 
+        public void ReloadResultImage(Result result)
+        {
+            if (result == null)
+                return;
+
+            Application.Current.Dispatcher.Invoke(() =>
+                _ = _mainVM.Results.RefreshResultImage(result)
+                    || _mainVM.ContextMenu.RefreshResultImage(result)
+                    || _mainVM.History.RefreshResultImage(result));
+        }
+
         public void RestartApp()
         {
             _mainVM.Hide();

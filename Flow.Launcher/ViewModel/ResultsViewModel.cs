@@ -195,6 +195,11 @@ namespace Flow.Launcher.ViewModel
             UpdateResults(newResults, reselect, token);
         }
 
+        /// <summary>
+        /// Reloads a single shown result's icon in place. Returns false if the result is not currently shown.
+        /// </summary>
+        public bool RefreshResultImage(Result result) => Results.RefreshImage(result);
+
         private void UpdateResults(List<ResultViewModel> newResults, bool reselect = true, CancellationToken token = default)
         {
             lock (_collectionLock)
@@ -302,6 +307,27 @@ namespace Flow.Launcher.ViewModel
             protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
             {
                 CollectionChanged?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reloads the icon of the row whose underlying <see cref="Result"/> is the given instance,
+            /// in place, without rebuilding the collection. Returns false if no such row is shown.
+            /// </summary>
+            public bool RefreshImage(Result result)
+            {
+                if (result == null)
+                    return false;
+
+                foreach (var item in this)
+                {
+                    if (ReferenceEquals(item.Result, result))
+                    {
+                        item.RefreshImage();
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             private void BulkAddAll(List<ResultViewModel> resultViews, CancellationToken token = default)

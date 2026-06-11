@@ -29,6 +29,16 @@ namespace Flow.Launcher.Plugin
         void ChangeQuery(string query, bool requery = false);
 
         /// <summary>
+        /// Reloads the icon of a single result that is currently shown, in place.
+        /// Change the result's <see cref="Result.IcoPath"/> or <see cref="Result.Icon"/> first, then call this
+        /// to swap the icon live (e.g. unchecked -> checked) without re-querying or rebuilding the result list,
+        /// so selection and the preview panel are left untouched and the window does not flash.
+        /// Has no effect if the result is not currently displayed.
+        /// </summary>
+        /// <param name="result">The result instance returned from your query whose icon source has changed.</param>
+        void ReloadResultImage(Result result);
+
+        /// <summary>
         /// Restart Flow Launcher
         /// </summary>
         void RestartApp();

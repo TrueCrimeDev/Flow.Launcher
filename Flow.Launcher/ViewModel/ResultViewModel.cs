@@ -244,13 +244,31 @@ namespace Flow.Launcher.ViewModel
             return await App.API.LoadImageAsync(imagePath, loadFullImage).ConfigureAwait(false);
         }
 
-        private async Task LoadImageAsync()
+        /// <summary>
+        /// Reloads <see cref="Image"/> from the current <see cref="Result.IcoPath"/>/<see cref="Result.Icon"/>
+        /// in place, without rebuilding the row. Used to swap a result's icon live (e.g. unchecked -> checked).
+        /// Unlike the initial load, this always routes through the <see cref="Image"/> setter so the binding
+        /// is notified even on an <see cref="ImageLoader"/> cache hit, and the current icon stays visible until
+        /// the new one is ready (no flash to the loading placeholder).
+        /// </summary>
+        public void RefreshImage()
+        {
+            _imageLoaded = true;
+            _ = LoadImageAsync(notifyOnCacheHit: true);
+        }
+
+        private async Task LoadImageAsync(bool notifyOnCacheHit = false)
         {
             var imagePath = Result.IcoPathAbsolute;
             var iconDelegate = Result.Icon;
             if (ImageLoader.TryGetValue(imagePath, false, out var img))
             {
-                _image = img;
+                // On the first load the binding is not attached yet, so we set the field directly.
+                // On a refresh we must go through the property so the binding is notified of the swap.
+                if (notifyOnCacheHit)
+                    Image = img;
+                else
+                    _image = img;
             }
             else
             {
