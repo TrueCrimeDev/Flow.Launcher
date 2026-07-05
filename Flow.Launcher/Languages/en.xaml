@@ -378,6 +378,7 @@
     <system:String x:Key="OpenContextMenuHotkey">Open Context Menu</system:String>
     <system:String x:Key="OpenNativeContextMenuHotkey">Open Native Context Menu</system:String>
     <system:String x:Key="SettingWindowHotkey">Open Setting Window</system:String>
+    <system:String x:Key="SettingWindowPluginStoreHotkey">Open Plugin Store</system:String>
     <system:String x:Key="CopyFilePathHotkey">Copy File Path</system:String>
     <system:String x:Key="ToggleGameModeHotkey">Toggle Game Mode</system:String>
     <system:String x:Key="ToggleHistoryHotkey">Toggle History</system:String>

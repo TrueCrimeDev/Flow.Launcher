@@ -20,6 +20,9 @@ public partial class SettingWindow
     private readonly Settings _settings;
     private readonly SettingWindowViewModel _viewModel;
 
+    // When set, the window opens directly on this page instead of the default (General).
+    private Type _initialPageType;
+
     #endregion
 
     #region Constructor
@@ -32,6 +35,11 @@ public partial class SettingWindow
         // Since WindowStartupLocation is set to Manual, initialize the window position before calling InitializeComponent
         UpdatePositionAndState();
         InitializeComponent();
+    }
+
+    public SettingWindow(Type initialPageType) : this()
+    {
+        _initialPageType = initialPageType;
     }
 
     #endregion
@@ -54,18 +62,7 @@ public partial class SettingWindow
         switch (e.PropertyName)
         {
             case nameof(SettingWindowViewModel.PageType):
-                var selectedIndex = _viewModel.PageType.Name switch
-                {
-                    nameof(SettingsPaneGeneral) => 0,
-                    nameof(SettingsPanePlugins) => 1,
-                    nameof(SettingsPanePluginStore) => 2,
-                    nameof(SettingsPaneTheme) => 3,
-                    nameof(SettingsPaneHotkey) => 4,
-                    nameof(SettingsPaneProxy) => 5,
-                    nameof(SettingsPaneAbout) => 6,
-                    _ => 0
-                };
-                NavView.SelectedItem = NavView.MenuItems[selectedIndex];
+                NavView.SelectedItem = NavView.MenuItems[NavIndexForPage(_viewModel.PageType)];
                 break;
         }
     }
@@ -292,8 +289,53 @@ public partial class SettingWindow
     private void ContentFrame_Loaded(object sender, RoutedEventArgs e)
     {
         _viewModel.SetPageType(null); // Set page type to null so that NavigationView_SelectionChanged can navigate the frame
-        NavView.SelectedItem = NavView.MenuItems[0]; /* Set First Page */
+        // Open on the requested page when one was supplied, otherwise the first page.
+        NavView.SelectedItem = NavView.MenuItems[NavIndexForPage(_initialPageType)];
     }
+
+    #endregion
+
+    #region Page Navigation
+
+    /// <summary>
+    /// Navigate the window to a settings page. Safe to call before the window has loaded:
+    /// the page is remembered and applied once the content frame is ready.
+    /// </summary>
+    public void NavigateToPage(Type pageType)
+    {
+        _initialPageType = pageType;
+        if (ContentFrame.IsLoaded)
+        {
+            NavView.SelectedItem = NavView.MenuItems[NavIndexForPage(pageType)];
+        }
+    }
+
+    /// <summary>
+    /// Map a settings page name (e.g. "PluginStore") to its page type. Returns null for
+    /// unrecognized names; the caller treats null as "open without changing the current page".
+    /// </summary>
+    internal static Type PageTypeFromName(string pageName) => pageName?.ToLowerInvariant() switch
+    {
+        "general" => typeof(SettingsPaneGeneral),
+        "plugins" => typeof(SettingsPanePlugins),
+        "pluginstore" => typeof(SettingsPanePluginStore),
+        "theme" => typeof(SettingsPaneTheme),
+        "hotkey" => typeof(SettingsPaneHotkey),
+        "proxy" => typeof(SettingsPaneProxy),
+        "about" => typeof(SettingsPaneAbout),
+        _ => null
+    };
+
+    private static int NavIndexForPage(Type pageType) => pageType?.Name switch
+    {
+        nameof(SettingsPanePlugins) => 1,
+        nameof(SettingsPanePluginStore) => 2,
+        nameof(SettingsPaneTheme) => 3,
+        nameof(SettingsPaneHotkey) => 4,
+        nameof(SettingsPaneProxy) => 5,
+        nameof(SettingsPaneAbout) => 6,
+        _ => 0
+    };
 
     #endregion
 }

@@ -146,6 +146,9 @@ namespace Flow.Launcher.ViewModel
                     case nameof(Settings.SettingWindowHotkey):
                         OnPropertyChanged(nameof(SettingWindowHotkey));
                         break;
+                    case nameof(Settings.SettingWindowPluginStoreHotkey):
+                        OnPropertyChanged(nameof(SettingWindowPluginStoreHotkey));
+                        break;
                     case nameof(Settings.OpenHistoryHotkey):
                         OnPropertyChanged(nameof(OpenHistoryHotkey));
                         break;
@@ -601,6 +604,12 @@ namespace Flow.Launcher.ViewModel
         }
 
         [RelayCommand]
+        private void OpenSettingPluginStore()
+        {
+            App.API.OpenSettingDialog("PluginStore");
+        }
+
+        [RelayCommand]
         private void SelectHelp()
         {
             App.API.OpenUrl("https://www.flowlauncher.com/docs/#/usage-tips");
@@ -1018,6 +1027,7 @@ namespace Flow.Launcher.ViewModel
         public string SelectPrevPageHotkey => VerifyOrSetDefaultHotkey(Settings.SelectPrevPageHotkey, "");
         public string OpenContextMenuHotkey => VerifyOrSetDefaultHotkey(Settings.OpenContextMenuHotkey, "Ctrl+O");
         public string SettingWindowHotkey => VerifyOrSetDefaultHotkey(Settings.SettingWindowHotkey, "Ctrl+I");
+        public string SettingWindowPluginStoreHotkey => VerifyOrSetDefaultHotkey(Settings.SettingWindowPluginStoreHotkey, "F2");
         public string OpenHistoryHotkey => VerifyOrSetDefaultHotkey(Settings.OpenHistoryHotkey, "Ctrl+H");
         public string CycleHistoryUpHotkey => VerifyOrSetDefaultHotkey(Settings.CycleHistoryUpHotkey, "Alt+Up");
         public string CycleHistoryDownHotkey => VerifyOrSetDefaultHotkey(Settings.CycleHistoryDownHotkey, "Alt+Down");

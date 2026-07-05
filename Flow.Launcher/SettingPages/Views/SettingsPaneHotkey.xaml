@@ -170,6 +170,16 @@
                             Type="SettingWindowHotkey"
                             ValidateKeyGesture="False" />
                     </ui:SettingsCard>
+                    <ui:SettingsCard Header="{DynamicResource SettingWindowPluginStoreHotkey}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Glyph="&#xe713;" />
+                        </ui:SettingsCard.HeaderIcon>
+
+                        <flowlauncher:HotkeyControl
+                            DefaultHotkey="F2"
+                            Type="SettingWindowPluginStoreHotkey"
+                            ValidateKeyGesture="False" />
+                    </ui:SettingsCard>
                     <ui:SettingsCard Header="{DynamicResource ToggleGameModeHotkey}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Glyph="&#xe7fc;" />

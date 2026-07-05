@@ -172,6 +172,16 @@ namespace Flow.Launcher.Plugin
         /// </summary>
         void OpenSettingDialog();
 
+        /// <summary>
+        /// Open setting dialog navigated to a specific page.
+        /// </summary>
+        /// <param name="pageName">
+        /// Page to open (case-insensitive): "General", "Plugins", "PluginStore", "Theme", "Hotkey", "Proxy", "About".
+        /// A recognized name navigates there even if the Settings window is already open.
+        /// Null, empty, or unrecognized values open/focus the Settings window without changing the current page.
+        /// </param>
+        void OpenSettingDialog(string pageName) => OpenSettingDialog();
+
 
         /// <summary>
         /// Open plugin setting window for a specific plugin.

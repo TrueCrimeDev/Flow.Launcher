@@ -189,6 +189,10 @@
             Command="{Binding OpenSettingCommand}"
             Modifiers="{Binding SettingWindowHotkey, Converter={StaticResource StringToKeyBindingConverter}, ConverterParameter='modifiers'}" />
         <KeyBinding
+            Key="{Binding SettingWindowPluginStoreHotkey, Converter={StaticResource StringToKeyBindingConverter}, ConverterParameter='key'}"
+            Command="{Binding OpenSettingPluginStoreCommand}"
+            Modifiers="{Binding SettingWindowPluginStoreHotkey, Converter={StaticResource StringToKeyBindingConverter}, ConverterParameter='modifiers'}" />
+        <KeyBinding
             Key="{Binding OpenHistoryHotkey, Converter={StaticResource StringToKeyBindingConverter}, ConverterParameter='key'}"
             Command="{Binding LoadHistoryCommand}"
             Modifiers="{Binding OpenHistoryHotkey, Converter={StaticResource StringToKeyBindingConverter}, ConverterParameter='modifiers'}" />

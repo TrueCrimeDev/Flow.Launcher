@@ -159,6 +159,24 @@ namespace Flow.Launcher
             });
         }
 
+        public void OpenSettingDialog(string pageName)
+        {
+            var pageType = SettingWindow.PageTypeFromName(pageName);
+            if (pageType == null)
+            {
+                OpenSettingDialog();
+                return;
+            }
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Pass the page to the constructor so a freshly-created window opens on it,
+                // and navigate explicitly to cover the case where the window is already open.
+                SettingWindow sw = SingletonWindowOpener.Open<SettingWindow>(pageType);
+                sw.NavigateToPage(pageType);
+            });
+        }
+
         public bool OpenPluginSettingsWindow(string pluginId)
         {
             return Application.Current.Dispatcher.Invoke(() =>
